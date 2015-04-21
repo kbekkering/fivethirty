@@ -1,1 +1,45 @@
 /* Empty. Add your own CSS if you like */
+button {
+	width: 100%;
+	height: 52px;
+	background-color: #ff6600;
+	color: white;
+	border: none;
+}
+
+.item {
+	text-align: center;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+ion-content {
+	background-color: #ffab02;
+}
+
+.item-timer {
+	background-color: #ffab02;
+	border: none;
+	box-shadow: none;
+	font-size: 30px;
+	padding-top: 50px;
+}
+
+.time-up {
+	background-color: black;
+}
+
+.time-up .item-timer {
+	color: white;
+	background-color: black;
+}
+
+.green {
+	background-color: green;
+	color: white;
+}
+
+.hidden {
+	color: white;
+}
+

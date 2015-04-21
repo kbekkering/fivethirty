@@ -3,81 +3,114 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+    if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleLightContent();
+    if(window.StatusBar) {
+      StatusBar.styleDefault();
     }
   });
+  createCard();
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+// Countdown timer
+var count = 5;
+var counter;
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: "/tab",
-    abstract: true,
-    templateUrl: "templates/tabs.html"
-  })
+// Keeping track of card score
+var cardScore = [false, false, false, false, false];
 
-  // Each tab has its own nav history stack:
+// Reset cardScore array
+function resetCardScore() {
+  cardScore = [false, false, false, false, false];
+  document.getElementById('test1').parentNode.parentNode.setAttribute('class','item item-body');
+  document.getElementById('test2').parentNode.parentNode.setAttribute('class','item item-body');
+  document.getElementById('test3').parentNode.parentNode.setAttribute('class','item item-body');
+  document.getElementById('test4').parentNode.parentNode.setAttribute('class','item item-body');
+  document.getElementById('test5').parentNode.parentNode.setAttribute('class','item item-body')
+}
 
-  .state('tab.dash', {
-    url: '/dash',
-    views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
-      }
+// Reset timer
+function resetTimer() {
+  clearInterval(counter);
+}
+
+function createCard() {
+  resetCardScore();
+  resetTimer();
+  
+  // How many items are in the array?
+  var arrayLength = testArray.length;
+  
+  // Get 5 random indexes for the array
+  var arr = []
+  while(arr.length < 5){
+    var randomnumber = Math.floor(Math.random() * arrayLength)
+    var found = false;
+    for (var i = 0;i < arr.length; i++){
+    if(arr[i] == randomnumber) { found = true; break }
     }
-  })
+    if(!found)arr[arr.length] = randomnumber;
+  }
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
+  // Write the corrosponding items for the previously generated random items
+  for (var i = 0;i < arr.length; i++) {
+    // create elementId
+    var elementId = "test" + (i+1);
 
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
-  });
+    // Write item to HTML
+    document.getElementById(elementId).innerHTML = testArray[arr[i]];
+    
+  }
+  count = 5;
+  document.getElementById("bodySelector").className = 'scroll-content';
+  document.getElementById("timer").innerHTML = count;
+  counter = setInterval(timer, 1000); 
+  
+}
 
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+// Toggle cards between guessed correctly and not guessed
+function toggleCard(elementId) {
+  
+  if (!cardScore[elementId - 1]) {
+    cardScore[elementId - 1] = true;
+    document.getElementById('test' + elementId).parentNode.parentNode.setAttribute('class','item item-body green')
+  } else {
+    cardScore[elementId - 1] = false;
+    document.getElementById('test' + elementId).parentNode.parentNode.setAttribute('class','item item-body')
+  }
 
-});
+}
+
+function timer() {
+  count = count-1;
+
+  if (count == 0)
+  {
+     resetTimer();
+     document.getElementById("bodySelector").className+=' time-up';
+     document.getElementById("timer").innerHTML = "time's up!";
+     return;
+  } ;
+
+  document.getElementById("timer").innerHTML = count;
+
+}
+
+function addToArray(newItem) {
+  if (newItem.length>0) {
+  testArray.push(newItem);
+  };
+  console.log(testArray);
+
+}
+
+//var testArray = ["schiphol", "pepsi max", "de toppers", "joost van de vondel", "de tachtigjarige oorlog", "de verenigde staten", "transavia", "lange frans", "hare krishna", "rita verdonk", "valentijnsdag", "buenos aires", "subway", "dirk scheringa", "alanis morissette", "prins charles", "de domstad", "esprit", "lara croft", "michiel de ruyter", "de olympische spelen", "wassenaar", "ymca", "toyota prius", "joran van der sloot", "bruce springsteen", "de maffia", "speedo", "roosendaal", "spongebob squarepants", "geert wilders", "het ijsselmeer", "backgammon", "sjaak en de bonenstaak", "boris becker", "angela groothuizen", "lufthansa", "sudoku", "peking", "john mcenroe"];
+var testArray = ["1", "2", "3", "4", "5"];
